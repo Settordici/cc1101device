@@ -1,11 +1,14 @@
 
 #include <Arduino.h>
 #include <U8g2lib.h>
+#include <ELECHOUSE_CC1101_SRC_DRV.h>
+#include "RCSwitch.h"
 
 #include "bitmaps.h"
 #include "animations.h"
 #include "functions.h"
 #include "definitions.h"
+#include "modes.h"
 
 /* 
 Pins needed
@@ -20,6 +23,7 @@ Pins needed
 */
 
 void setup() {
+  Serial.begin(115200);
   u8g2.setColorIndex(1);  // set the color to white
   u8g2.begin();
   u8g2.setBitmapMode(1);
@@ -30,7 +34,24 @@ void setup() {
   pinMode(BUTTON_LEFT_PIN, INPUT_PULLUP); // left button
   pinMode(BUTTON_SELECT_PIN, INPUT_PULLUP); // select button
   pinMode(BUTTON_RIGHT_PIN, INPUT_PULLUP); // right button
+  pinMode(BUTTON_UP_PIN, INPUT_PULLUP); // up button
+  pinMode(BUTTON_DOWN_PIN, INPUT_PULLUP); // down button
 
+  ELECHOUSE_cc1101.setSpiPin(SCK, 21, 19, 4);
+  ELECHOUSE_cc1101.Init();            // must be set to initialize the cc1101!
+  //ELECHOUSE_cc1101.setRxBW(812.50);  // Set the Receive Bandwidth in kHz. Value from 58.03 to 812.50. Default is 812.50 kHz.
+  //ELECHOUSE_cc1101.setPA(10);       // set TxPower. The following settings are possible depending on the frequency band.  (-30  -20  -15  -10  -6    0    5    7    10   11   12)   Default is max!
+  ELECHOUSE_cc1101.setMHZ(433.92); // Here you can set your basic frequency. The lib calculates the frequency automatically (default = 433.92).The cc1101 can: 300-348 MHZ, 387-464MHZ and 779-928MHZ. Read More info from datasheet.
+
+  mySwitch.enableReceive(RECEIVE_PIN);  // Receiver on
+
+  ELECHOUSE_cc1101.SetRx();  // set Receive on
+
+  if (ELECHOUSE_cc1101.getCC1101()){       // Check the CC1101 Spi connection.
+  Serial.println("Connection OK");
+  }else{
+  Serial.println("Connection Error");
+  }
 }
 
 
@@ -95,11 +116,8 @@ void loop() {
     u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[item_selected]))/2)+1, 60, menu_items[item_selected]);
     }
     if (current_screen == 1) {
-      u8g2.clearBuffer();
-      u8g2.setFont(u8g_font_7x14B);
-      u8g2.drawStr(0, 10, "Value detected:");
-              
-        u8g2.sendBuffer();
+      
+      receiveCode();
       
     }
 
