@@ -115,10 +115,13 @@ void loop() {
     u8g2.setFont(u8g_font_7x14B);
     u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[item_selected]))/2)+1, 60, menu_items[item_selected]);
     }
-    if (current_screen == 1) {
-      
-      receiveCode();
-      
+    switch(current_screen) { 
+      case 1:
+        receiveCode();
+        break;
+      case 5:
+        wifiScan();
+        break;
     }
 
   u8g2.sendBuffer();

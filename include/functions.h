@@ -5,7 +5,8 @@
 int correctShift (int item_selected, int shift) {
   // set correct values for the previous and next items
   int out = item_selected + shift;
-  if (out < 0) {out = NUM_ITEMS - 1;} // previous item would be below first = make it the last
-  if (out >= NUM_ITEMS) {out = 0;} // next item would be after last = make it the first
+  if (out < 0) {out = NUM_ITEMS + shift + item_selected;} // previous item would be below first = make it the last
+  if (out > NUM_ITEMS) {out = 0 + (shift - 1);}
+  if (out == NUM_ITEMS) {out = 0;} // next item would be after last = make it the first
   return out;
 }
