@@ -6,9 +6,6 @@
 #include "functions.h"
 
 
-
-unsigned int counter = 1;
-
 void shiftRight(int speed, int item_selected) {
 
     animation = 1;
@@ -156,4 +153,25 @@ void animateMain(int item_selected) {
           break;
         default: break;
       }
+}
+
+void turnOff() {
+  u8g2.setDrawColor(0);
+  switch (counter%32) {
+    case 1 ... 31:
+      u8g2.drawBox(0, 0, 128, counter%32);
+      u8g2.drawBox(0, 63-counter%32, 128, counter%32);
+      u8g2.setDrawColor(1);
+      break;
+  
+    case 0:
+      Serial.println("Going to sleep...");
+      ELECHOUSE_cc1101.goSleep();
+      disableInternalPower();
+      //esp_sleep_enable_timer_wakeup(1000000); // 1 sec
+      esp_deep_sleep_start();
+      // we never reach here
+      break;
+  }
+        
 }

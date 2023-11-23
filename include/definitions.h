@@ -40,6 +40,7 @@ char menu_items [NUM_ITEMS] [MAX_ITEM_LENGTH] = {  // array with item names
 #define SEND_PIN 14
 
 int animation = 0;
+unsigned int counter = 1;
 
 int button_left_clicked = 0; // only perform action when button is clicked, and wait until another press
 int button_select_clicked = 0; // same as above
