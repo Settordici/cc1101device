@@ -69,6 +69,10 @@ void mainMenu() {
     //Text
     u8g2.setFont(u8g_font_7x14B);
     u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[item_selected]))/2)+1, 60, menu_items[item_selected]);
+
+    //RGB led
+    nled.fill(nled.ColorHSV(65536*(item_selected+1)/NUM_ITEMS, 255, LED_BRIGHTNESS));
+    nled.show();
 }
 
 

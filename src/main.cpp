@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <U8g2lib.h>
 #include <ELECHOUSE_CC1101_SRC_DRV.h>
+#include <Adafruit_NeoPixel.h>
 #include "RCSwitch.h"
 
 #include "bitmaps.h"
@@ -36,6 +37,9 @@ void setup() {
   pinMode(BUTTON_RIGHT_PIN, INPUT_PULLUP); // right button
   pinMode(BUTTON_UP_PIN, INPUT_PULLUP); // up button
   pinMode(BUTTON_DOWN_PIN, INPUT_PULLUP); // down button
+
+  nled.begin();
+  nled.show(); // Initialize the pixel to 'off'
 }
 
 

@@ -39,6 +39,11 @@ void shiftRight(int speed, int item_selected) {
     u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[correctShift(item_selected, 1)]))/2)+129-map(i, 0, speed, 0, 128), 63, menu_items[correctShift(item_selected, 1)]);
 
     u8g2.sendBuffer(); // send buffer from RAM to display controller
+
+    //RGB led
+    if (item_selected == NUM_ITEMS-1) nled.fill(nled.ColorHSV(map(i, 0, speed, 0, 65536*(correctShift(item_selected, 1)+1)/NUM_ITEMS), 255, LED_BRIGHTNESS));
+    else nled.fill(nled.ColorHSV(map(i, 0, speed, 65536*(item_selected+1)/NUM_ITEMS, 65536*(correctShift(item_selected, 1)+1)/NUM_ITEMS), 255, LED_BRIGHTNESS));
+    nled.show();
     }
     animation = 0;
 }
@@ -76,6 +81,11 @@ void shiftLeft(int speed, int item_selected) {
     u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[correctShift(item_selected, -1)]))/2)-127+map(i, 0, speed, 0, 128), 63, menu_items[correctShift(item_selected, -1)]);
 
     u8g2.sendBuffer(); // send buffer from RAM to display controller
+
+    //RGB led
+    if (item_selected == 0) nled.fill(nled.ColorHSV(map(i, 0, speed, 65536*(item_selected+1)/NUM_ITEMS, 0), 255, LED_BRIGHTNESS));
+    else nled.fill(nled.ColorHSV(map(i, 0, speed, 65536*(item_selected+1)/NUM_ITEMS, 65536*(correctShift(item_selected, -1)+1)/NUM_ITEMS), 255, LED_BRIGHTNESS));
+    nled.show();
     }
     animation = 0;
 }
