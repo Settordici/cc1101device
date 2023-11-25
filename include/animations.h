@@ -6,7 +6,7 @@
 #include "functions.h"
 
 
-void shiftRight(int speed, int item_selected) {
+void shiftRight(int speed, int menu_item_selected) {
 
     animation = 1;
 
@@ -15,40 +15,40 @@ void shiftRight(int speed, int item_selected) {
 
     //Slider
     u8g2.drawXBMP(0, 0, 128, 8, Slider_bits);
-    u8g2.drawXBMP(((120/(NUM_ITEMS-1))*item_selected)+map(i, 0, speed, 0, 120/(NUM_ITEMS-1)), 0, 8, 3, SliderThing_bits);
+    u8g2.drawXBMP(((120/(NUM_ITEMS-1))*menu_item_selected)+map(i, 0, speed, 0, 120/(NUM_ITEMS-1)), 0, 8, 3, SliderThing_bits);
 
     //Old Main menu
     u8g2.drawXBMP(45-map(i, 0, speed, 0, 60), 7, 38, 38, MenuSide_bits);
-    u8g2.drawXBMP(48-map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[item_selected]);
+    u8g2.drawXBMP(48-map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[menu_item_selected]);
 
     //New right menu
     u8g2.drawXBMP(165-map(i, 0, speed, 0, 60), 7, 38, 38, MenuSide_bits);
-    u8g2.drawXBMP(168-map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(item_selected, 2)]);
+    u8g2.drawXBMP(168-map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(menu_item_selected, 2, NUM_ITEMS)]);
 
     //New Main menu
     u8g2.drawXBMP(105-map(i, 0, speed, 0, 60), 7, 38, 38, MenuSide_bits);
-    u8g2.drawXBMP(108-map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(item_selected, 1)]);
+    u8g2.drawXBMP(108-map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(menu_item_selected, 1, NUM_ITEMS)]);
 
     //Exiting left menu
     u8g2.drawXBMP(-15-map(i, 0, speed, 0, 60), 7, 38, 38, MenuSide_bits);
-    u8g2.drawXBMP(-12-map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(item_selected, -1)]);
+    u8g2.drawXBMP(-12-map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(menu_item_selected, -1, NUM_ITEMS)]);
 
     //Text
     u8g2.setFont(u8g_font_7x14);
-    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[item_selected]))/2)+1-map(i, 0, speed, 0, 128), 63, menu_items[item_selected]);
-    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[correctShift(item_selected, 1)]))/2)+129-map(i, 0, speed, 0, 128), 63, menu_items[correctShift(item_selected, 1)]);
+    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[menu_item_selected]))/2)+1-map(i, 0, speed, 0, 128), 63, menu_items[menu_item_selected]);
+    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[correctShift(menu_item_selected, 1, NUM_ITEMS)]))/2)+129-map(i, 0, speed, 0, 128), 63, menu_items[correctShift(menu_item_selected, 1, NUM_ITEMS)]);
 
     u8g2.sendBuffer(); // send buffer from RAM to display controller
 
     //RGB led
-    if (item_selected == NUM_ITEMS-1) nled.fill(nled.ColorHSV(map(i, 0, speed, 0, 65536*(correctShift(item_selected, 1)+1)/NUM_ITEMS), 255, LED_BRIGHTNESS));
-    else nled.fill(nled.ColorHSV(map(i, 0, speed, 65536*(item_selected+1)/NUM_ITEMS, 65536*(correctShift(item_selected, 1)+1)/NUM_ITEMS), 255, LED_BRIGHTNESS));
+    if (menu_item_selected == NUM_ITEMS-1) nled.fill(nled.ColorHSV(map(i, 0, speed, 0, 65536*(correctShift(menu_item_selected, 1, NUM_ITEMS)+1)/NUM_ITEMS), 255, LED_BRIGHTNESS));
+    else nled.fill(nled.ColorHSV(map(i, 0, speed, 65536*(menu_item_selected+1)/NUM_ITEMS, 65536*(correctShift(menu_item_selected, 1, NUM_ITEMS)+1)/NUM_ITEMS), 255, LED_BRIGHTNESS));
     nled.show();
     }
     animation = 0;
 }
 
-void shiftLeft(int speed, int item_selected) {
+void shiftLeft(int speed, int menu_item_selected) {
 
     animation = 1;
 
@@ -57,42 +57,42 @@ void shiftLeft(int speed, int item_selected) {
 
     //Slider
     u8g2.drawXBMP(0, 0, 128, 8, Slider_bits);
-    u8g2.drawXBMP(((120/(NUM_ITEMS-1))*item_selected)-map(i, 0, speed, 0, 120/(NUM_ITEMS-1)), 0, 8, 3, SliderThing_bits);
+    u8g2.drawXBMP(((120/(NUM_ITEMS-1))*menu_item_selected)-map(i, 0, speed, 0, 120/(NUM_ITEMS-1)), 0, 8, 3, SliderThing_bits);
 
     //Old Main menu
     u8g2.drawXBMP(45+map(i, 0, speed, 0, 60), 7, 38, 38, MenuSide_bits);
-    u8g2.drawXBMP(48+map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[item_selected]);
+    u8g2.drawXBMP(48+map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[menu_item_selected]);
 
     //New left menu
     u8g2.drawXBMP(-75+map(i, 0, speed, 0, 60), 7, 38, 38, MenuSide_bits);
-    u8g2.drawXBMP(-72+map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(item_selected, -2)]);
+    u8g2.drawXBMP(-72+map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(menu_item_selected, -2, NUM_ITEMS)]);
 
     //New Main menu
     u8g2.drawXBMP(-15+map(i, 0, speed, 0, 60), 7, 38, 38, MenuSide_bits);
-    u8g2.drawXBMP(-12+map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(item_selected, -1)]);
+    u8g2.drawXBMP(-12+map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(menu_item_selected, -1, NUM_ITEMS)]);
 
     //Exiting right menu
     u8g2.drawXBMP(105+map(i, 0, speed, 0, 60), 7, 38, 38, MenuSide_bits);
-    u8g2.drawXBMP(108+map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(item_selected, 1)]);
+    u8g2.drawXBMP(108+map(i, 0, speed, 0, 60), 10, 32, 32, bitmap_icons[correctShift(menu_item_selected, 1, NUM_ITEMS)]);
 
     //Text
     u8g2.setFont(u8g_font_7x14);
-    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[item_selected]))/2)+1+map(i, 0, speed, 0, 128), 63, menu_items[item_selected]);
-    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[correctShift(item_selected, -1)]))/2)-127+map(i, 0, speed, 0, 128), 63, menu_items[correctShift(item_selected, -1)]);
+    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[menu_item_selected]))/2)+1+map(i, 0, speed, 0, 128), 63, menu_items[menu_item_selected]);
+    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[correctShift(menu_item_selected, -1, NUM_ITEMS)]))/2)-127+map(i, 0, speed, 0, 128), 63, menu_items[correctShift(menu_item_selected, -1, NUM_ITEMS)]);
 
     u8g2.sendBuffer(); // send buffer from RAM to display controller
 
     //RGB led
-    if (item_selected == 0) nled.fill(nled.ColorHSV(map(i, 0, speed, 65536*(item_selected+1)/NUM_ITEMS, 0), 255, LED_BRIGHTNESS));
-    else nled.fill(nled.ColorHSV(map(i, 0, speed, 65536*(item_selected+1)/NUM_ITEMS, 65536*(correctShift(item_selected, -1)+1)/NUM_ITEMS), 255, LED_BRIGHTNESS));
+    if (menu_item_selected == 0) nled.fill(nled.ColorHSV(map(i, 0, speed, 65536*(menu_item_selected+1)/NUM_ITEMS, 0), 255, LED_BRIGHTNESS));
+    else nled.fill(nled.ColorHSV(map(i, 0, speed, 65536*(menu_item_selected+1)/NUM_ITEMS, 65536*(correctShift(menu_item_selected, -1, NUM_ITEMS)+1)/NUM_ITEMS), 255, LED_BRIGHTNESS));
     nled.show();
     }
     animation = 0;
 }
 
-void animateMain(int item_selected) {
+void animateMain(int menu_item_selected) {
 
-      switch(item_selected) {
+      switch(menu_item_selected) {
         case 0:
           u8g2.setDrawColor(0);
           u8g2.drawBox(53, 15, 22, 22);

@@ -4,6 +4,12 @@
 #include <ELECHOUSE_CC1101_SRC_DRV.h>
 #include <Adafruit_NeoPixel.h>
 #include "RCSwitch.h"
+#include <Arduino.h>
+#include <SPIFFS.h>
+#include <FS.h>
+
+#define CSV_PARSER_DONT_IMPORT_SD
+#include <CSV_Parser.h>
 
 #include "bitmaps.h"
 #include "animations.h"
@@ -23,6 +29,8 @@ Pins needed
 
 */
 
+// ! Insulate better
+
 void setup() {
   Serial.begin(115200);
   u8g2.setColorIndex(1);  // set the color to white
@@ -40,6 +48,27 @@ void setup() {
 
   nled.begin();
   nled.show(); // Initialize the pixel to 'off'
+
+  if (!SPIFFS.begin(true)) {
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
+
+  if(!SPIFFS.exists("/codes.csv")) {
+    File file = SPIFFS.open("/codes.csv", FILE_WRITE);
+    if (!file) {
+    Serial.println("There was an error opening the file for writing");
+    return;
+    }
+    if (file.print("DisplayName,Frequency,Protocol,Value,Pulse,Count\n")) {
+    Serial.println("File was written");
+  } else {
+    Serial.println("File write failed");
+  }
+    file.close();
+  }
+  
+  listAllFiles();
 }
 
 
@@ -53,6 +82,9 @@ void loop() {
   switch(current_screen) { 
     case 1:
       receiveCode();
+      break;
+    case 2:
+      transmitCode();
       break;
     case 5:
       wifiScan();

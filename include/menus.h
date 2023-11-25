@@ -11,19 +11,19 @@ void mainMenu() {
 
     // left and right buttons only work for the menu screen
     if ((digitalRead(BUTTON_LEFT_PIN) == LOW) && (button_left_clicked == 0)) { // left button clicked - jump to previous menu item
-        shiftLeft(20, item_selected);
-        item_selected = item_selected - 1; // select previous item
+        shiftLeft(20, menu_item_selected);
+        menu_item_selected = menu_item_selected - 1; // select previous item
         button_left_clicked = 1; // set button to clicked to only perform the action once
-        if (item_selected < 0) { // if first item was selected, jump to last item
-            item_selected = NUM_ITEMS-1;
+        if (menu_item_selected < 0) { // if first item was selected, jump to last item
+            menu_item_selected = NUM_ITEMS-1;
         }
       }
     else if ((digitalRead(BUTTON_RIGHT_PIN) == LOW) && (button_right_clicked == 0)) { // right button clicked - jump to next menu item
-        shiftRight(20, item_selected);
-        item_selected = item_selected + 1; // select next item
+        shiftRight(20, menu_item_selected);
+        menu_item_selected = menu_item_selected + 1; // select next item
         button_right_clicked = 1; // set button to clicked to only perform the action once
-        if (item_selected >= NUM_ITEMS) { // last item was selected, jump to first menu item
-          item_selected = 0;
+        if (menu_item_selected >= NUM_ITEMS) { // last item was selected, jump to first menu item
+          menu_item_selected = 0;
         }
     } 
 
@@ -36,11 +36,14 @@ void mainMenu() {
 
     if ((digitalRead(BUTTON_SELECT_PIN) == LOW) && (button_select_clicked == 0)) { // select button clicked, jump between screens
         button_select_clicked = 1; // set button to clicked to only perform the action once
-        current_screen = item_selected;
+        current_screen = menu_item_selected;
         switch (current_screen) {
             case 1:
-                cc1101Init();
+                cc1101Init('R');
                 break;
+            case 2:
+                cc1101Init('T');
+                //initialized = false; //Something needs to be initialized
             case NUM_ITEMS-1:
                 counter = 1;
                 break;
@@ -52,29 +55,28 @@ void mainMenu() {
 
     //Slider
     u8g2.drawXBMP(0, 0, 128, 8, Slider_bits);
-    u8g2.drawXBMP((120/(NUM_ITEMS-1))*item_selected, 0, 8, 3, SliderThing_bits);
+    u8g2.drawXBMP((120/(NUM_ITEMS-1))*menu_item_selected, 0, 8, 3, SliderThing_bits);
 
     //Main menu
     u8g2.drawXBMP(45, 7, 38, 38, MenuMain_bits);
-    u8g2.drawXBMP(48, 10, 32, 32, bitmap_icons[item_selected]);
-    animateMain(item_selected);
+    u8g2.drawXBMP(48, 10, 32, 32, bitmap_icons[menu_item_selected]);
+    animateMain(menu_item_selected);
 
     //Side menu
     u8g2.drawXBMP(105, 7, 38, 38, MenuSide_bits);
-    u8g2.drawXBMP(108, 10, 32, 32, bitmap_icons[correctShift(item_selected, 1)]);
+    u8g2.drawXBMP(108, 10, 32, 32, bitmap_icons[correctShift(menu_item_selected, 1, NUM_ITEMS)]);
 
     u8g2.drawXBMP(-15, 7, 38, 38, MenuSide_bits);
-    u8g2.drawXBMP(-12, 10, 32, 32, bitmap_icons[correctShift(item_selected, -1)]);
+    u8g2.drawXBMP(-12, 10, 32, 32, bitmap_icons[correctShift(menu_item_selected, -1, NUM_ITEMS)]);
 
     //Text
     u8g2.setFont(u8g_font_7x14B);
-    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[item_selected]))/2)+1, 60, menu_items[item_selected]);
+    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[menu_item_selected]))/2)+1, 60, menu_items[menu_item_selected]);
 
     //RGB led
-    nled.fill(nled.ColorHSV(65536*(item_selected+1)/NUM_ITEMS, 255, LED_BRIGHTNESS));
+    nled.fill(nled.ColorHSV(65536*(menu_item_selected+1)/NUM_ITEMS, 255, LED_BRIGHTNESS));
     nled.show();
 }
-
 
 void receiveCode() {
 
@@ -110,6 +112,61 @@ void receiveCode() {
 
     mySwitch.resetAvailable();
     
+}
+
+void transmitCode() {
+    //Parse the saved codes
+    //TODO: Make this run only once
+    CSV_Parser cp(/*format*/ "sfdddd");
+    File file = SPIFFS.open("/codes.csv");
+    if(!file || file.isDirectory()){
+        Serial.println("- failed to open file for reading");
+        return;
+    }
+    while(file.available()){
+        cp << (char)file.read();
+    }
+    file.close();
+    cp.parseLeftover(); // needed after reading the whole file when the last line of the file doesn't end with "\n"
+    char **displayNames = (char**)cp["DisplayName"];
+    float *frequency = (float*)cp["Frequency"];
+    int16_t *protocol = (int16_t*)cp["Protocol"];
+    int16_t value = 1000;
+    int16_t *pulse = (int16_t*)cp["Pulse"];
+    int16_t *count = (int16_t*)cp["Count"];
+
+    u8g2.setFont(u8g_font_5x8);
+    for(int i=1; i<=cp.getRowsCount(); i++) {
+        u8g2.drawStr(1, 8*i+1, displayNames[i-1]);
+    }
+
+    //Selection
+    u8g2.setDrawColor(2);
+    u8g2.drawBox(0, 1, 128, 9);
+    u8g2.sendBuffer();
+
+    //Button handling
+    if ((digitalRead(BUTTON_SELECT_PIN) == LOW) && (button_select_clicked == 0)) { // select button clicked, jump between screens
+        nled.fill(nled.ColorHSV(0, 255, 255));
+        nled.show();
+        delay(100);
+        nled.fill(nled.ColorHSV(0, 0, 0));
+        nled.show();
+
+        ELECHOUSE_cc1101.setMHZ(frequency[0]);
+        mySwitch.setProtocol(protocol[0]);
+        mySwitch.setPulseLength(pulse[0]);
+        mySwitch.setRepeatTransmit(count[0]);
+
+        mySwitch.send(value, 12); //TODO: Add bits in csv file, then actually put the real code
+
+        Serial.println("Code sent");
+
+        button_select_clicked = 1; // set button to clicked to only perform the action once
+    }
+    if ((digitalRead(BUTTON_SELECT_PIN) == HIGH) && (button_select_clicked == 1)) { // unclick 
+        button_select_clicked = 0;
+    }
 }
 
 void wifiScan() {

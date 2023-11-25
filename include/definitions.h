@@ -8,7 +8,7 @@ Adafruit_NeoPixel nled = Adafruit_NeoPixel(1, PIN_NEOPIXEL, NEO_GRB + NEO_KHZ800
 
 const int NUM_ITEMS = 7; // number of items in the list and also the number of screenshots and screenshots with QR codes (other screens)
 const int MAX_ITEM_LENGTH = 20; // maximum characters for the item name
-const int LED_BRIGHTNESS = 50;
+const int LED_BRIGHTNESS = 1;
 
 char menu_items [NUM_ITEMS] [MAX_ITEM_LENGTH] = {  // array with item names
   { "Frequence Analyzer" },
@@ -47,11 +47,15 @@ unsigned int counter = 1;
 int button_left_clicked = 0; // only perform action when button is clicked, and wait until another press
 int button_select_clicked = 0; // same as above
 int button_right_clicked = 0; // same as above
+int button_up_clicked = 0; // same as above
+int button_down_clicked = 0; // same as above
 
-int item_selected = 0; // which item in the menu is selected
+int menu_item_selected = 0; // which item in the main menu is selected
 
 int current_screen = -1;
 
 char numbuffer[6];
 char pbuffer[1];
 char plsbuffer[4];
+
+//bool initialized = false;
