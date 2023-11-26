@@ -8,7 +8,7 @@ Adafruit_NeoPixel nled = Adafruit_NeoPixel(1, PIN_NEOPIXEL, NEO_GRB + NEO_KHZ800
 
 const int NUM_ITEMS = 7; // number of items in the list and also the number of screenshots and screenshots with QR codes (other screens)
 const int MAX_ITEM_LENGTH = 20; // maximum characters for the item name
-const int LED_BRIGHTNESS = 1;
+const int LED_BRIGHTNESS = 255;
 
 char menu_items [NUM_ITEMS] [MAX_ITEM_LENGTH] = {  // array with item names
   { "Frequence Analyzer" },

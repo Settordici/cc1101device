@@ -29,12 +29,16 @@ void cc1101Init(char mode) { //TODO: Handle both recepting and transmitting
   //ELECHOUSE_cc1101.setPA(10);       // set TxPower. The following settings are possible depending on the frequency band.  (-30  -20  -15  -10  -6    0    5    7    10   11   12)   Default is max!
   ELECHOUSE_cc1101.setMHZ(433.92); // Here you can set your basic frequency. The lib calculates the frequency automatically (default = 433.92).The cc1101 can: 300-348 MHZ, 387-464MHZ and 779-928MHZ. Read More info from datasheet.
   if (mode == 'R') {
+    mySwitch.disableTransmit();  
     mySwitch.enableReceive(RECEIVE_PIN);  // Receiver on
     ELECHOUSE_cc1101.SetRx();  // set Receive on
+    Serial.println("Set R mode");
   }
   else if (mode == 'T') {
+    mySwitch.disableReceive();  
     mySwitch.enableTransmit(SEND_PIN);
     ELECHOUSE_cc1101.SetTx();
+    Serial.println("Set T mode");
   }
   
   if (ELECHOUSE_cc1101.getCC1101()){       // Check the CC1101 Spi connection.

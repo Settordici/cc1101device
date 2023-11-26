@@ -131,9 +131,10 @@ void transmitCode() {
     char **displayNames = (char**)cp["DisplayName"];
     float *frequency = (float*)cp["Frequency"];
     int16_t *protocol = (int16_t*)cp["Protocol"];
-    int16_t value = 1000;
+    int16_t *value = (int16_t*)cp["Value"];
+    int16_t *bit = (int16_t*)cp["Bit"];
     int16_t *pulse = (int16_t*)cp["Pulse"];
-    int16_t *count = (int16_t*)cp["Count"];
+    
 
     u8g2.setFont(u8g_font_5x8);
     for(int i=1; i<=cp.getRowsCount(); i++) {
@@ -156,9 +157,15 @@ void transmitCode() {
         ELECHOUSE_cc1101.setMHZ(frequency[0]);
         mySwitch.setProtocol(protocol[0]);
         mySwitch.setPulseLength(pulse[0]);
-        mySwitch.setRepeatTransmit(count[0]);
+    
+        mySwitch.send(value[0], bit[0]);
+        //mySwitch.send("011010101010");
 
-        mySwitch.send(value, 12); //TODO: Add bits in csv file, then actually put the real code
+        Serial.println(frequency[0]);
+        Serial.println(protocol[0]);
+        Serial.println(value[0]);
+        Serial.println(bit[0]);
+        Serial.println(pulse[0]);
 
         Serial.println("Code sent");
 

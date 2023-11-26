@@ -60,7 +60,7 @@ void setup() {
     Serial.println("There was an error opening the file for writing");
     return;
     }
-    if (file.print("DisplayName,Frequency,Protocol,Value,Pulse,Count\n")) {
+    if (file.print("DisplayName,Frequency,Protocol,Value,Bit,Pulse\n")) {
     Serial.println("File was written");
   } else {
     Serial.println("File write failed");
