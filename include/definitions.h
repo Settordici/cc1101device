@@ -38,8 +38,13 @@ char menu_items [NUM_ITEMS] [MAX_ITEM_LENGTH] = {  // array with item names
 #define BUTTON_UP_PIN 15 // pin for UP button
 #define BUTTON_DOWN_PIN 33 // pin for DOWN button
 
-#define RECEIVE_PIN 32
-#define SEND_PIN 14
+#define SCK_PIN SCK
+#define MISO_PIN 21
+#define MOSI_PIN 19
+#define SS_PIN 4
+
+#define RECEIVE_PIN 32 // !Probably wrong
+#define SEND_PIN 14 // !Probably wrong
 
 int animation = 0;
 unsigned int counter = 1;

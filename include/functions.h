@@ -23,20 +23,21 @@ void disableInternalPower() {
 }
 
 void cc1101Init(char mode) { //TODO: Handle both recepting and transmitting
-  ELECHOUSE_cc1101.setSpiPin(SCK, 21, 19, 4);
+  ELECHOUSE_cc1101.setSpiPin(SCK_PIN, MISO_PIN, MOSI_PIN, SS_PIN);
   ELECHOUSE_cc1101.Init();            // must be set to initialize the cc1101!
   //ELECHOUSE_cc1101.setRxBW(812.50);  // Set the Receive Bandwidth in kHz. Value from 58.03 to 812.50. Default is 812.50 kHz.
   //ELECHOUSE_cc1101.setPA(10);       // set TxPower. The following settings are possible depending on the frequency band.  (-30  -20  -15  -10  -6    0    5    7    10   11   12)   Default is max!
   ELECHOUSE_cc1101.setMHZ(433.92); // Here you can set your basic frequency. The lib calculates the frequency automatically (default = 433.92).The cc1101 can: 300-348 MHZ, 387-464MHZ and 779-928MHZ. Read More info from datasheet.
   if (mode == 'R') {
-    mySwitch.disableTransmit();  
-    mySwitch.enableReceive(RECEIVE_PIN);  // Receiver on
+    mySwitch.disableTransmit();
+    mySwitch.enableReceive(14);  // Receiver on
     ELECHOUSE_cc1101.SetRx();  // set Receive on
     Serial.println("Set R mode");
   }
   else if (mode == 'T') {
-    mySwitch.disableReceive();  
-    mySwitch.enableTransmit(SEND_PIN);
+    mySwitch.disableReceive();
+    ELECHOUSE_cc1101.setGDO0(32); 
+    mySwitch.enableTransmit(32);
     ELECHOUSE_cc1101.SetTx();
     Serial.println("Set T mode");
   }
