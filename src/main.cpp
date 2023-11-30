@@ -37,8 +37,6 @@ void setup() {
   u8g2.begin();
   u8g2.setBitmapMode(1);
 
-  ELECHOUSE_cc1101.goSleep();
-
   // define pins for buttons
   // INPUT_PULLUP means the button is HIGH when not pressed, and LOW when pressed
   // since it´s connected between some pin and GND

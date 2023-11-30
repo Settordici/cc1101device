@@ -22,7 +22,7 @@ void disableInternalPower() {
   #endif
 }
 
-void cc1101Init(char mode) { //TODO: Handle both recepting and transmitting
+void cc1101Init(char mode) { //TODO: Fix weird GPIO error
   ELECHOUSE_cc1101.setSpiPin(SCK_PIN, MISO_PIN, MOSI_PIN, SS_PIN);
   ELECHOUSE_cc1101.Init();            // must be set to initialize the cc1101!
   //ELECHOUSE_cc1101.setRxBW(812.50);  // Set the Receive Bandwidth in kHz. Value from 58.03 to 812.50. Default is 812.50 kHz.

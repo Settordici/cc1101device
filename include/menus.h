@@ -12,19 +12,11 @@ void mainMenu() {
     // left and right buttons only work for the menu screen
     if ((digitalRead(BUTTON_LEFT_PIN) == LOW) && (button_left_clicked == 0)) { // left button clicked - jump to previous menu item
         shiftLeft(20, menu_item_selected);
-        menu_item_selected = menu_item_selected - 1; // select previous item
-        button_left_clicked = 1; // set button to clicked to only perform the action once
-        if (menu_item_selected < 0) { // if first item was selected, jump to last item
-            menu_item_selected = NUM_ITEMS-1;
-        }
+        menu_item_selected = correctShift(menu_item_selected, -1, NUM_ITEMS);
       }
     else if ((digitalRead(BUTTON_RIGHT_PIN) == LOW) && (button_right_clicked == 0)) { // right button clicked - jump to next menu item
         shiftRight(20, menu_item_selected);
-        menu_item_selected = menu_item_selected + 1; // select next item
-        button_right_clicked = 1; // set button to clicked to only perform the action once
-        if (menu_item_selected >= NUM_ITEMS) { // last item was selected, jump to first menu item
-          menu_item_selected = 0;
-        }
+        menu_item_selected = correctShift(menu_item_selected, +1, NUM_ITEMS);
     } 
 
     if ((digitalRead(BUTTON_LEFT_PIN) == HIGH) && (button_left_clicked == 1)) { // unclick 
@@ -135,19 +127,18 @@ void transmitCode() {
     int16_t *bit = (int16_t*)cp["Bit"];
     int16_t *pulse = (int16_t*)cp["Pulse"];
     
-
-    u8g2.setFont(u8g_font_5x8);
-    for(int i=1; i<=cp.getRowsCount(); i++) {
-        u8g2.drawStr(1, 8*i+1, displayNames[i-1]);
+    u8g2.setFont(u8g_font_6x10);
+    for(int i=1; i<=(cp.getRowsCount()-(send_item_selected/5)*5); i++) {
+        u8g2.drawStr(1, 12*i+1, displayNames[(send_item_selected/5)*5+i-1]);
     }
 
     //Selection
     u8g2.setDrawColor(2);
-    u8g2.drawBox(0, 1, 128, 9);
+    u8g2.drawBox(0, 4+send_item_selected%5*12, 128, 11);
     u8g2.sendBuffer();
 
     //Button handling
-    if ((digitalRead(BUTTON_SELECT_PIN) == LOW) && (button_select_clicked == 0)) { // select button clicked, jump between screens
+    if ((digitalRead(BUTTON_SELECT_PIN) == LOW) && (button_select_clicked == 0)) { 
         nled.fill(nled.ColorHSV(0, 255, 255));
         nled.show();
         delay(100);
@@ -158,8 +149,7 @@ void transmitCode() {
         mySwitch.setProtocol(protocol[0]);
         mySwitch.setPulseLength(pulse[0]);
     
-        mySwitch.send(value[0], bit[0]);
-        //mySwitch.send("011010101010");
+        //mySwitch.send(value[0], bit[0]);
 
         Serial.println(frequency[0]);
         Serial.println(protocol[0]);
@@ -174,10 +164,87 @@ void transmitCode() {
     if ((digitalRead(BUTTON_SELECT_PIN) == HIGH) && (button_select_clicked == 1)) { // unclick 
         button_select_clicked = 0;
     }
+
+    if ((digitalRead(BUTTON_UP_PIN) == LOW) && (button_up_clicked == 0)) { // up button clicked - jump to previous entry
+        send_item_selected = correctShift(send_item_selected, -1, cp.getRowsCount());
+        delay(75);
+      }
+    else if ((digitalRead(BUTTON_DOWN_PIN) == LOW) && (button_down_clicked == 0)) { // up button clicked - jump to nexr entry
+        send_item_selected = correctShift(send_item_selected, 1, cp.getRowsCount());
+        delay(75);
+    } 
+
+    if ((digitalRead(BUTTON_UP_PIN) == HIGH) && (button_up_clicked == 1)) { // unclick 
+        button_left_clicked = 0;
+    }
+    if ((digitalRead(BUTTON_DOWN_PIN) == HIGH) && (button_down_clicked == 1)) { // unclick
+        button_right_clicked = 0;
+    }
 }
 
 void wifiScan() {
-  
+  WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
+    delay(100);
+    Serial.println("Wifi setup done");
+
+    int n = WiFi.scanNetworks();
+    if (n == 0) {
+        Serial.println("no networks found");
+    } else {
+        Serial.print(n);
+        Serial.println(" networks found");
+        Serial.println("Nr | SSID                             | RSSI | CH | Encryption");
+        for (int i = 0; i < n; ++i) {
+            // Print SSID and RSSI for each network found
+            Serial.printf("%2d",i + 1);
+            Serial.print(" | ");
+            Serial.printf("%-32.32s", WiFi.SSID(i).c_str());
+            Serial.print(" | ");
+            Serial.printf("%4ld", WiFi.RSSI(i));
+            Serial.print(" | ");
+            Serial.printf("%2ld", WiFi.channel(i));
+            Serial.print(" | ");
+            switch (WiFi.encryptionType(i))
+            {
+            case WIFI_AUTH_OPEN:
+                Serial.print("open");
+                break;
+            case WIFI_AUTH_WEP:
+                Serial.print("WEP");
+                break;
+            case WIFI_AUTH_WPA_PSK:
+                Serial.print("WPA");
+                break;
+            case WIFI_AUTH_WPA2_PSK:
+                Serial.print("WPA2");
+                break;
+            case WIFI_AUTH_WPA_WPA2_PSK:
+                Serial.print("WPA+WPA2");
+                break;
+            case WIFI_AUTH_WPA2_ENTERPRISE:
+                Serial.print("WPA2-EAP");
+                break;
+            case WIFI_AUTH_WPA3_PSK:
+                Serial.print("WPA3");
+                break;
+            case WIFI_AUTH_WPA2_WPA3_PSK:
+                Serial.print("WPA2+WPA3");
+                break;
+            case WIFI_AUTH_WAPI_PSK:
+                Serial.print("WAPI");
+                break;
+            default:
+                Serial.print("unknown");
+            }
+            Serial.println();
+            delay(10);
+        }
+    }
+    Serial.println("");
+
+    // Delete the scan result to free memory for code below.
+    WiFi.scanDelete();
 }
 
 void deepSleep() {

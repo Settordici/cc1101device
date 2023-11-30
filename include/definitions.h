@@ -56,6 +56,7 @@ int button_up_clicked = 0; // same as above
 int button_down_clicked = 0; // same as above
 
 int menu_item_selected = 0; // which item in the main menu is selected
+int send_item_selected = 0; // which item in the transmit menu is selected
 
 int current_screen = -1;
 
