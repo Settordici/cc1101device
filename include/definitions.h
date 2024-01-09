@@ -8,7 +8,7 @@ Adafruit_NeoPixel nled = Adafruit_NeoPixel(1, PIN_NEOPIXEL, NEO_GRB + NEO_KHZ800
 
 const int NUM_ITEMS = 7; // number of items in the list and also the number of screenshots and screenshots with QR codes (other screens)
 const int MAX_ITEM_LENGTH = 20; // maximum characters for the item name
-const int LED_BRIGHTNESS = 255;
+const int LED_BRIGHTNESS = 5;
 
 char menu_items [NUM_ITEMS] [MAX_ITEM_LENGTH] = {  // array with item names
   { "Frequence Analyzer" },
@@ -37,6 +37,7 @@ char menu_items [NUM_ITEMS] [MAX_ITEM_LENGTH] = {  // array with item names
 #define BUTTON_RIGHT_PIN 12 // pin for RIGHT button
 #define BUTTON_UP_PIN 15 // pin for UP button
 #define BUTTON_DOWN_PIN 33 // pin for DOWN button
+#define BUTTON_BACK_PIN 36 // pin for BACK button
 
 #define SCK_PIN SCK
 #define MISO_PIN 21
@@ -54,6 +55,7 @@ int button_select_clicked = 0; // same as above
 int button_right_clicked = 0; // same as above
 int button_up_clicked = 0; // same as above
 int button_down_clicked = 0; // same as above
+int button_back_clicked = 0; // same as above
 
 int menu_item_selected = 0; // which item in the main menu is selected
 int send_item_selected = 0; // which item in the transmit menu is selected
@@ -63,5 +65,3 @@ int current_screen = -1;
 char numbuffer[6];
 char pbuffer[1];
 char plsbuffer[4];
-
-//bool initialized = false;

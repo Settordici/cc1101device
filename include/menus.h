@@ -145,17 +145,17 @@ void transmitCode() {
         nled.fill(nled.ColorHSV(0, 0, 0));
         nled.show();
 
-        ELECHOUSE_cc1101.setMHZ(frequency[0]);
-        mySwitch.setProtocol(protocol[0]);
-        mySwitch.setPulseLength(pulse[0]);
+        ELECHOUSE_cc1101.setMHZ(frequency[send_item_selected]);
+        mySwitch.setProtocol(protocol[send_item_selected]);
+        mySwitch.setPulseLength(pulse[send_item_selected]);
     
-        //mySwitch.send(value[0], bit[0]);
+        mySwitch.send(value[send_item_selected], bit[send_item_selected]);
 
-        Serial.println(frequency[0]);
-        Serial.println(protocol[0]);
-        Serial.println(value[0]);
-        Serial.println(bit[0]);
-        Serial.println(pulse[0]);
+        Serial.println(frequency[send_item_selected]);
+        Serial.println(protocol[send_item_selected]);
+        Serial.println(value[send_item_selected]);
+        Serial.println(bit[send_item_selected]);
+        Serial.println(pulse[send_item_selected]);
 
         Serial.println("Code sent");
 

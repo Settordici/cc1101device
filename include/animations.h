@@ -35,8 +35,11 @@ void shiftRight(int speed, int menu_item_selected) {
 
     //Text
     u8g2.setFont(u8g_font_7x14);
-    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[menu_item_selected]))/2)+1-map(i, 0, speed, 0, 128), 63, menu_items[menu_item_selected]);
-    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[correctShift(menu_item_selected, 1, NUM_ITEMS)]))/2)+129-map(i, 0, speed, 0, 128), 63, menu_items[correctShift(menu_item_selected, 1, NUM_ITEMS)]);
+    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[menu_item_selected]))/2)+1-map(i, 0, speed, 0, 128), 60, menu_items[menu_item_selected]);
+    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[correctShift(menu_item_selected, 1, NUM_ITEMS)]))/2)+129-map(i, 0, speed, 0, 128), 60, menu_items[correctShift(menu_item_selected, 1, NUM_ITEMS)]);
+
+    //Battery
+    drawBattery();
 
     u8g2.sendBuffer(); // send buffer from RAM to display controller
 
@@ -77,8 +80,11 @@ void shiftLeft(int speed, int menu_item_selected) {
 
     //Text
     u8g2.setFont(u8g_font_7x14);
-    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[menu_item_selected]))/2)+1+map(i, 0, speed, 0, 128), 63, menu_items[menu_item_selected]);
-    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[correctShift(menu_item_selected, -1, NUM_ITEMS)]))/2)-127+map(i, 0, speed, 0, 128), 63, menu_items[correctShift(menu_item_selected, -1, NUM_ITEMS)]);
+    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[menu_item_selected]))/2)+1+map(i, 0, speed, 0, 128), 60, menu_items[menu_item_selected]);
+    u8g2.drawStr(((126-u8g2.getStrWidth(menu_items[correctShift(menu_item_selected, -1, NUM_ITEMS)]))/2)-127+map(i, 0, speed, 0, 128), 60, menu_items[correctShift(menu_item_selected, -1, NUM_ITEMS)]);
+
+    //Battery
+    drawBattery();
 
     u8g2.sendBuffer(); // send buffer from RAM to display controller
 

@@ -20,7 +20,7 @@
 /* 
 Pins needed
 2 for I2C screen
-3/5 for the joystick
+7 for the joystick
 4 for the SPI antenna
 2 for the antenna
 
@@ -77,8 +77,20 @@ void loop() {
 
   if(!animation && current_screen == -1) {
     mainMenu();
+    drawBattery();
   }
 
+  /*
+  if ((digitalRead(BUTTON_BACK_PIN) == LOW) && (button_back_clicked == 0)) { 
+    button_back_clicked = 1; // set button to clicked to only perform the action once
+    current_screen = -1;
+    Serial.println("Click");
+  }
+  if ((digitalRead(BUTTON_BACK_PIN) == HIGH) && (button_back_clicked == 1)) { // unclick 
+    button_back_clicked = 0;
+  }
+  */
+  
   switch(current_screen) { 
     case 1:
       receiveCode();

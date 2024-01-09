@@ -80,3 +80,8 @@ void appendFile(fs::FS &fs, const char * path, const char * message){
     }
     file.close();
 }
+
+
+void drawBattery() {
+    u8g2.drawLine(0, 63, 127, 63);
+}
